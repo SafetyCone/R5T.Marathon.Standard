@@ -18,7 +18,7 @@ namespace R5T.Marathon.Standard
         /// No corresponding AddXAction() method for this service since the queue processor will never be injected.
         /// </remarks>
         public static IServiceCollection AddBackgroundWorkItemQueueProcessor(this IServiceCollection services,
-            ServiceAction<IBackgroundWorkItemQueue> addBackgroundWorkItemQueue)
+            IServiceAction<IBackgroundWorkItemQueue> addBackgroundWorkItemQueue)
         {
             services
                 .AddHostedService<BackgroundWorkItemQueueProcessor>()
@@ -33,7 +33,9 @@ namespace R5T.Marathon.Standard
         /// </summary>
         public static IServiceCollection AddBackgroundWorkItemQueueProcessor(this IServiceCollection services)
         {
-            services.AddBackgroundWorkItemQueueProcessor(services.AddBackgroundWorkItemQueueAction());
+            var backgroundWorkItemQueueAction = services.AddBackgroundWorkItemQueueAction();
+
+            services.AddBackgroundWorkItemQueueProcessor(backgroundWorkItemQueueAction);
 
             return services;
         }
@@ -41,7 +43,7 @@ namespace R5T.Marathon.Standard
         /// <summary>
         /// Adds the <see cref="BackgroundWorkItemQueueProcessor"/> as a <see cref="Microsoft.Extensions.Hosting.IHostedService"/> using the <see cref="BackgroundWorkItemQueue"/> implementation of <see cref="IBackgroundWorkItemQueue"/>.
         /// </summary>
-        public static ServiceAction<IBackgroundWorkItemQueue> AddBackgroundWorkItemQueueAndProcessorAction(this IServiceCollection services)
+        public static IServiceAction<IBackgroundWorkItemQueue> AddBackgroundWorkItemQueueAndProcessorAction(this IServiceCollection services)
         {
             var serviceAction = new ServiceAction<IBackgroundWorkItemQueue>(() => services.AddBackgroundWorkItemQueueProcessor());
             return serviceAction;
