@@ -50,9 +50,12 @@ namespace R5T.Marathon.Standard
         /// <summary>
         /// Adds the <see cref="BackgroundWorkItemQueueProcessor"/> as a <see cref="Microsoft.Extensions.Hosting.IHostedService"/> using the <see cref="BackgroundWorkItemQueue"/> implementation of <see cref="IBackgroundWorkItemQueue"/>.
         /// </summary>
-        public static IServiceAction<IBackgroundWorkItemQueue> AddBackgroundWorkItemQueueAndProcessorAction(this IServiceCollection services)
+        public static IServiceAction<IBackgroundWorkItemQueue> AddBackgroundWorkItemQueueAndProcessorAction(this IServiceCollection services,
+            IServiceAction<IExceptionSink> exceptionSinkAction)
         {
-            var serviceAction = new ServiceAction<IBackgroundWorkItemQueue>(() => services.AddBackgroundWorkItemQueueProcessor());
+            var serviceAction = new ServiceAction<IBackgroundWorkItemQueue>(() => services.AddBackgroundWorkItemQueueProcessor(
+                exceptionSinkAction));
+
             return serviceAction;
         }
     }
